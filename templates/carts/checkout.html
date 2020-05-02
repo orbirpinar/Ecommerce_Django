@@ -3,7 +3,7 @@
 {% block content %}
 <main class="mt-5 pt-4">
   <div class="container wow fadeIn">
-    
+
     <!-- Heading -->
     <h2 class="my-5 h2 text-center">Checkout form</h2>
 
@@ -17,7 +17,7 @@
         <div class="card">
 
           <!--Card content-->
-          <form class="card-body">
+          <form method="POST" class="card-body">{% csrf_token %}
 
             <!--Grid row-->
             <div class="row">
@@ -32,8 +32,8 @@
                   <label for="firstName" class="">First name</label>
                 </div>
 
-                <div class="md-form mb-5">
-                  <input type="text" id="email" class="form-control" placeholder="youremail@example.com">
+                <div class="md-form">
+                  {{form.customer}}
                   <label for="email" class="">Email (optional)</label>
                 </div>
 
@@ -56,7 +56,7 @@
             <div class="md-form mb-5">
               {{form.street_adress}}
               <label for="address" class="">Address</label>
-              
+
             </div>
 
             <!--address-2-->
@@ -92,12 +92,8 @@
 
                 <label for="state">State</label>
                 <select class="custom-select d-block w-100" id="state" required>
-                  <option value="{{ form.city }}"
+                  <option value="{{ form.city }}"></option>
                 </select>
-                <div class="invalid-feedback">
-                  Please provide a valid state.
-                </div>
-
               </div>
               <!--Grid column-->
 
@@ -105,13 +101,21 @@
               <div class="col-lg-4 col-md-6 mb-4">
 
                 <label for="zip">Zip</label>
-               {{form.zip_code}}
+                {{form.zip_code}}
                 <div class="invalid-feedback">
                   Zip code required.
                 </div>
 
               </div>
               <!--Grid column-->
+              <div class="col-lg-4 col-md-12 mb-4">
+
+                <label for="country">Select Adress Type</label>
+                <select class="custom-select d-block w-100">
+
+                  <option value="{{ form.adress_type }}"></option>
+                </select>
+              </div>
 
             </div>
             <!--Grid row-->
@@ -160,9 +164,9 @@
             <span class="text-muted">{{ item.quantity }}</span>
             <span class="text-muted">{{ item.get_total_item_price }}</span>
           </li>
-        {% endfor %}
+          {% endfor %}
         </ul>
-        
+
         <!-- Cart -->
 
 
@@ -178,9 +182,9 @@
 <script>
   var total = '{{ cart.get_total }}'
 
-  if (total == "0"){
-    document.getElementById('checkoutForm').innerHTML = '' 
-    
+  if (total == "0") {
+    document.getElementById('checkoutForm').innerHTML = ''
+
   }
 </script>
 {% endblock content %}

@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from products.models import Product
 from django.contrib import messages
 from .models import Cart,CartItem
-from .forms import AdressForm
+from .forms import AdressForm,CustomerForm
 
 def viewcart(request):
     try:
@@ -17,7 +17,7 @@ def viewcart(request):
         context = {'cart':cart}
     else:
         context = {'empty':True}
-    
+    request.session['total_items'] = cart.cartitem.count()
     template = 'carts/view.html'
     return render(request, template,context)
 
@@ -29,10 +29,10 @@ def add_to_cart(request,slug):
         new_cart  = Cart()
         new_cart.save()
         request.session['cart_id'] = new_cart.id
-        the_id = new_cart.id
-
-    
+        the_id = new_cart.id    
     cart  = Cart.objects.filter(id=the_id)   
+
+    print(cart[0].cartitem.count())
     product = get_object_or_404(Product,slug=slug)
     cart_item , created = CartItem.objects.get_or_create(product=product) 
     if cart.exists():
@@ -125,12 +125,17 @@ def checkout(request):
          return redirect('home')
     if request.method == "POST":
         form = AdressForm(request.POST)
+        c_form = CustomerForm(request.POST)
         if form.is_valid():
-            c_form = form.save(commit=False)
+            adress = form.save(commit=False)
+            customer = c_form.save(commit=False)
             if request.user:
-                c_form.customer = request.user
-                c_form.save()
-            c_form.save()
+                adress.customer = request.user
+                adress.save()
+                cart.shipping_adress = adress
+
+            adress.save()
+            cart.shipping_adress = adress
     else:
         form = AdressForm()
 
