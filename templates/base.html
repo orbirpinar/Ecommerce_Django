@@ -76,7 +76,7 @@
         <ul class="navbar-nav nav-flex-icons">
           <li class="nav-item">
             <a href="{% url 'cart-view' %}" class="nav-link waves-effect">
-              <span class="badge red z-depth-1 mr-1">{% if not request.session.items_total %} 0 {% else %}   {{ request.session.items_total }} {% endif %} </span>
+              <span class="badge red z-depth-1 mr-1"> {{ request.session.total_items }}</span>
               <i class="fas fa-shopping-cart"></i>
               <span class="clearfix d-none d-sm-inline-block"> Cart </span>
             </a>
