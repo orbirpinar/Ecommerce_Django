@@ -1,0 +1,37 @@
+
+
+
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a href="{% url  'home' %}" class="navbar-brand">Ecommerce</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar5">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse" id="navbar5">
+        <form action="{% url 'search-result' %}" method="get" class="mx-2 my-auto d-inline w-50 ">
+            <div class="input-group">
+                <input name="q" type="text" class="form-control border border-right-0 " >
+                <span class="input-group-append">
+                    <button class="btn btn-warning border border-left-0" type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+        </form>
+        <div class="collapse navbar-collapse flex-grow-1 text-right" id="myNavbar">
+          <ul class="navbar-nav ml-auto flex-nowrap">
+           
+              <li class="nav-item">
+                <a class=" btn btn-md btn-danger    text-light " href="{% url 'cart-view' %}">
+                    <i class="fas fa-shopping-cart"></i> CART <span class="badge badge-warning">     
+                    {% if not request.session.items_total %} 0 {% else %}   {{ request.session.items_total }} {% endif %}</span>
+                </a>
+              </li>
+              
+          </ul>
+      </div>
+        <ul class="navbar-nav">
+            
+        </ul>
+    </div>
+</nav>
+

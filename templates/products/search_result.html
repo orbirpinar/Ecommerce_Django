@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+
+
+  <section id="searchSection">
+
+    <div class="container-fluid pt-5 mt-5">
+      <div class="row">
+        <div class="col-md-8 mx-auto">
+          <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 ">
+
+        <!-- Navbar brand -->
+        <span class="navbar-brand">Categories:</span>
+
+        <!-- Collapse button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+          aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Collapsible content -->
+        <div class="collapse navbar-collapse" id="basicExampleNav">
+
+          <!-- Links -->
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">All
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Shirts</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Sport wears</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Outwears</a>
+            </li>
+
+          </ul>
+          <!-- Links -->
+
+          <form action="{% url 'search-result' %}" method="get" class="form-inline">
+            <div class="md-form my-0">
+              <input name="q" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            </div>
+          </form>
+        </div>
+        <!-- Collapsible content -->
+
+      </nav>
+
+  </section>
+
+<!--Section: Products v.3-->
+<section class="text-center mb-4">
+
+  <div class="container pt-3">
+  <div class="row wow fadeIn">
+
+      {% for product in object_list %}
+    <div class="col-lg-3 col-md-6 mb-4">
+
+      <!--Card-->
+      <div class="card">
+
+        <!--Card image-->
+        <div class="view overlay">
+          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg" class="card-img-top"
+            alt="">
+          <a href="{{  product.get_absolute_url }}">
+            <div class="mask rgba-white-slight"></div>
+          </a>
+        </div>
+        <!--Card image-->
+
+        <!--Card content-->
+        <div class="card-body text-center">
+          <!--Category & Title-->
+          <a href="{{  product.get_absolute_url }}" class="grey-text">
+            <h5>{{product.get_category_display}}</h5>
+          </a>
+          <h5>
+            <strong>
+              <a href="{{  product.get_absolute_url }}" class="dark-grey-text">{{ product.title }}
+                <span class="badge badge-pill    {{ product.get_label_display }}-color">NEW</span>
+              </a>
+            </strong>
+          </h5>
+
+          <h4 class="font-weight-bold blue-text">
+            <strong>{{product.price}}$</strong>
+          </h4>
+
+        </div>
+        <!--Card content-->
+
+      </div>
+      <!--Card-->
+
+    </div>
+      {% endfor %}
+  
+  </div>
+  <!--Grid row-->
+
+</div> 
+
+</section>
+{% endblock content %}
