@@ -30,16 +30,18 @@
               <span class="badge blue mr-1">{{product.get_label_display}}</span>
             </a>
           </div>
-
+          
         <div class="cart float-right">
+          {%if product.cartitem_set.all%}
           <a href="{% url 'add-to-cart' product.slug %}" class="btn btn-success btn-md my-0 p">
-            <!--  Does not work -->
-            {% if product.cart in product.cartitem_set.all %}
-            Added to Cart 
-            {% else %}
-            Add to Cart
-            {% endif %}
+            Added To Cart
             <i class="fas fa-shopping-cart ml-1"></i>
+          {% else %}
+          <a href="{% url 'add-to-cart' product.slug %}" class="btn btn-danger btn-md my-0 p">
+            Add to Cart
+            <i class="fas fa-shopping-cart ml-1"></i>
+            {% endif %}
+
             {{message }}
           </a>
         </div>
