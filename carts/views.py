@@ -17,7 +17,7 @@ def viewcart(request):
         context = {'cart':cart}
     else:
         context = {'empty':True}
-    request.session['total_items'] = cart.cartitem.count()
+    request.session['total_items'] = cart.total_qantity()
     template = 'carts/view.html'
     return render(request, template,context)
 

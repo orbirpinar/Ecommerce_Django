@@ -62,7 +62,13 @@ class Cart(models.Model):
         total = 0
         for cart_item in self.cartitem.all():
             total += cart_item.get_final_price()
-        return total         
+        return total  
+    
+    def total_qantity(self):
+        totalQunratity = 0
+        for cart_item in self.cartitem.all():
+            totalQunratity += cart_item.quantity
+        return totalQunratity
 
 
 ADRESS_FIELDS = (
@@ -80,7 +86,7 @@ class Adress(models.Model):
     zip_code = models.CharField(max_length=100)
     adress_type = models.CharField(choices=ADRESS_FIELDS,max_length=1)
 
-    class Meata:
+    class Meta:
         verbose_name_plural = 'Adresses'
 
 

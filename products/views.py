@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 
-from django.views.generic import ListView
+from django.views.generic import ListView,DetailView
 from .models import Product
+from carts.models import Cart,CartItem
+
+
 from django.db.models import Q
 
 def home(request):
@@ -14,11 +17,11 @@ def productlist(request):
     context = {'products':products}
     return render(request,"products/product_list.html",context)
 
-def productdetail(request,slug):
-    product = Product.objects.get(slug=slug)
-    images = product.productimage_set.all()
-    context= {'product':product,'images':images}
-    return render(request,'products/product_detail.html',context)
+class ProductDetailView(DetailView):
+    model = Product
+    context_object_name = 'product'
+    template_name = "products/product_detail.html"
+    
 
 
 class SearchResultView(ListView):
