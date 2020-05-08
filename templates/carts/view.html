@@ -24,7 +24,7 @@
             <div class="card-body">
                 <!-- PRODUCT -->
                 {% for item in cart.cartitem.all %}
-                <div class="row">
+                <div class="row row-{{ item.product.slug }}">
                     <div class="col-6 text-sm-center col-sm-6 text-md-left col-md-6">
                         <h4 class="product-name"><strong>{{item.product.title}}</strong></h4>
 
@@ -36,10 +36,10 @@
                         <div class="col-4 col-sm-4 col-md-4 tex-center">
                             <div class="quantity">
                                 <a data-url="{% url 'add_to_cart' item.product.slug  %}" 
-                                    class="plus" data-slug="{{ item.product.slug }}"><i class="fas fa-plus"></i></a>
+                                    class="plus {{ item.product.slug }}" data-slug="{{ item.product.slug }}"><i class="fas fa-plus"></i></a>
                                 <p>{{ item.quantity }}</p>
-                                <a href="{% url 'remove_single_item_from_cart' item.product.slug %}" data-slug={{product.slug}} 
-                                    value="-" class="minus"><i class="fas fa-minus"></i></a>
+                                <a data-url="{% url 'remove_single_item_from_cart' item.product.slug %}" data-slug={{item.product.slug}} 
+                                     class="minus {{ item.product.slug }}"><i class="fas fa-minus"></i></a>
                             </div>
                         </div>
                         <div class="col-2 col-sm-2 col-md-4 text-right">
@@ -77,23 +77,77 @@
 <script>
 
 
+
+//Increase Qunatity
 $(document).on('click', '.plus', function () {
 
-    const addButton =  $(".plus")
-    const url = addButton.attr("data-url");
-    const slug = addButton.attr('data-slug');
+    const url = $(this).attr("data-url");
+    const slug = $(this).attr('data-slug');
     $.ajax({
       url:url,
       data:{
         slug:slug
       },
       success:function(response){
+        
         console.log(response);
-        addButton.next().text(response.quantity)
+       
+        $(`.${slug}`).next().text(response.quantity)
+        console.log(response.quantity)
+        console.log(response.totalItems)
         response.quantity +=1
+        // console.log( $(`.${slug}`).next().text())
+        
+
+        
 
       }
     })
 });
+
+
+//Decrease Quantity
+$(document).on('click', '.minus', function () {
+
+    const url = $(this).attr("data-url");
+    const slug = $(this).attr('data-slug');
+    $.ajax({
+    url:url,
+    data:{
+        slug:slug
+    },
+    success:function(response){
+        console.log(response);
+        qty = parseInt(response.quantity);
+        $(`.${slug}`).next().text(response.quantity)
+        
+        if(qty<1){
+            qty -=1
+            $(`.row-${slug}`).html('')
+            $(`.${slug}`).next().text(response.quantity)
+        }
+        qty -=1
+        console.log($(`.row-${slug}`))
+            
+        
+        
+        if(response.totalItems===0){
+            $('.shopping-cart').html('').append(`
+                    <div class="row">
+                <div class="col-md-6 mx-auto text-center py-5">
+                    <i class="fas fa-shopping-cart fa-6x" style="color:#dc3545;"></i>
+                    <h2 class="pt-4">Your Cart is empty</h2>
+
+                </div>
+            </div>
+            
+            `);
+
+        }
+        
+    
+    }
+    })
+    });
 </script>
 {% endblock %}

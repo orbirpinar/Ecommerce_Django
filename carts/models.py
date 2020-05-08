@@ -65,10 +65,10 @@ class Cart(models.Model):
         return total  
     
     def total_qantity(self):
-        totalQunratity = 0
+        totalQuantity = 0
         for cart_item in self.cartitem.all():
-            totalQunratity += cart_item.quantity
-        return totalQunratity
+            totalQuantity += cart_item.quantity
+        return totalQuantity
 
 
 ADRESS_FIELDS = (

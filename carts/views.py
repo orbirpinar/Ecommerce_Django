@@ -36,9 +36,10 @@ def add_to_cart(request,slug):
     cart  = Cart.objects.filter(id=the_id)  
    
     isCartInTheProduct = False
-    print(cart[0].cartitem.count())
+    totalItems =cart[0].total_qantity()+1
     product = get_object_or_404(Product,slug=request.GET.get('slug')) 
-    cart_item , created = CartItem.objects.get_or_create(product=product) 
+    cart_item , created = CartItem.objects.get_or_create(product=product)
+
     if cart.exists():
         order = cart[0]
         if order.cartitem.filter(product__slug=product.slug).exists():
@@ -46,17 +47,17 @@ def add_to_cart(request,slug):
             cart_item.quantity+=1
             cart_item.save()
             isCartInTheProduct = True
-            return JsonResponse({'isCartInTheProduct':isCartInTheProduct,'quantity':product.slug})
+            return JsonResponse({'isCartInTheProduct':isCartInTheProduct,'quantity':cart_item.quantity,'product_item':product.slug,'totalItems':totalItems})
         else:
             isCartInTheProduct = True
             order.cartitem.add(cart_item)
-            return JsonResponse({'isCartInTheProduct':isCartInTheProduct,'product_item':product.slug})
+            return JsonResponse({'isCartInTheProduct':isCartInTheProduct,'product_item':product.slug,'totalItems':totalItems})
     else:
         
         order = Cart.objects.create(id=the_id)
         order.items.add(cart_item)
         isCartInTheProduct = True
-        return JsonResponse({'isCartInTheProduct':isCartInTheProduct,'product_item':product.slug})
+        return JsonResponse({'isCartInTheProduct':isCartInTheProduct,'product_item':product.slug,'totalItems':totalItems})
 
 def remove_from_cart(request,slug):
     request.session.set_expiry(50000)
@@ -71,6 +72,7 @@ def remove_from_cart(request,slug):
     
     cart  = Cart.objects.filter(id=the_id)   
     product = get_object_or_404(Product,slug=slug)
+    
     if cart.exists():
         order = cart[0]
         if order.cartitem.filter(product__slug=product.slug).exists():
@@ -100,6 +102,7 @@ def remove_single_item_from_cart(request,slug):
     
     cart  = Cart.objects.filter(id=the_id)   
     product = get_object_or_404(Product,slug=slug)
+    totalItems =cart[0].total_qantity()-1
     if cart.exists():
         order = cart[0]
         if order.cartitem.filter(product__slug=product.slug).exists():
@@ -108,6 +111,7 @@ def remove_single_item_from_cart(request,slug):
                 cart_item.quantity -= 1
                 cart_item.save()
                 
+                
             elif cart_item.quantity==1:
                 print(cart_item)
                 order.cartitem.remove(cart_item)
@@ -115,7 +119,7 @@ def remove_single_item_from_cart(request,slug):
                
                 
             messages.info(request, "This item quantity was updated.")
-            return redirect('cart-view')
+            return JsonResponse({'quantity':cart_item.quantity,'slug':product.slug,'totalItems':totalItems})
         else:
             messages.info(request, "This item was not in your cart")
             return redirect('cart-view')
