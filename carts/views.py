@@ -4,6 +4,9 @@ from django.urls import reverse
 from django.shortcuts import redirect
 from products.models import Product
 from django.contrib import messages
+from django.http import JsonResponse
+
+
 from .models import Cart,CartItem
 from .forms import AdressForm,CustomerForm
 
@@ -30,25 +33,30 @@ def add_to_cart(request,slug):
         new_cart.save()
         request.session['cart_id'] = new_cart.id
         the_id = new_cart.id    
-    cart  = Cart.objects.filter(id=the_id)   
-
+    cart  = Cart.objects.filter(id=the_id)  
+   
+    isCartInTheProduct = False
     print(cart[0].cartitem.count())
-    product = get_object_or_404(Product,slug=slug)
+    product = get_object_or_404(Product,slug=request.GET.get('slug')) 
     cart_item , created = CartItem.objects.get_or_create(product=product) 
     if cart.exists():
         order = cart[0]
         if order.cartitem.filter(product__slug=product.slug).exists():
+            
             cart_item.quantity+=1
             cart_item.save()
-            return redirect('cart-view')
+            isCartInTheProduct = True
+            return JsonResponse({'isCartInTheProduct':isCartInTheProduct,'quantity':product.slug})
         else:
+            isCartInTheProduct = True
             order.cartitem.add(cart_item)
-            return redirect('cart-view')
+            return JsonResponse({'isCartInTheProduct':isCartInTheProduct,'product_item':product.slug})
     else:
+        
         order = Cart.objects.create(id=the_id)
         order.items.add(cart_item)
-        return redirect("cart-view")
-    
+        isCartInTheProduct = True
+        return JsonResponse({'isCartInTheProduct':isCartInTheProduct,'product_item':product.slug})
 
 def remove_from_cart(request,slug):
     request.session.set_expiry(50000)
@@ -99,8 +107,13 @@ def remove_single_item_from_cart(request,slug):
             if cart_item.quantity > 1:
                 cart_item.quantity -= 1
                 cart_item.save()
-            else:
+                
+            elif cart_item.quantity==1:
+                print(cart_item)
                 order.cartitem.remove(cart_item)
+                cart_item.delete()
+               
+                
             messages.info(request, "This item quantity was updated.")
             return redirect('cart-view')
         else:

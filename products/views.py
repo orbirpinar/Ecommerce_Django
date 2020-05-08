@@ -1,8 +1,12 @@
 from django.shortcuts import render,get_object_or_404
-
+from django.views.generic.detail import BaseDetailView
+from django.http import JsonResponse
 from django.views.generic import ListView,DetailView
+
+
 from .models import Product
 from carts.models import Cart,CartItem
+
 
 
 from django.db.models import Q
@@ -21,6 +25,9 @@ class ProductDetailView(DetailView):
     model = Product
     context_object_name = 'product'
     template_name = "products/product_detail.html"
+
+
+
     
 
 

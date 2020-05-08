@@ -32,22 +32,27 @@
           </div>
           
         <div class="cart float-right">
+          {{product.cartitem_set.all}}
+          <button data-slug={{product.slug}} data-url='{% url "add_to_cart"  product.slug %}'  id="addButton" class="btn
           {%if product.cartitem_set.all%}
-          <a href="{% url 'add-to-cart' product.slug %}" class="btn btn-success btn-md my-0 p">
-            Added To Cart
-            <i class="fas fa-shopping-cart ml-1"></i>
+          
+          btn-success 
           {% else %}
-          <a href="{% url 'add-to-cart' product.slug %}" class="btn btn-danger btn-md my-0 p">
-            Add to Cart
+          btn-danger
+          {% endif %}
+          btn-md my-0 p">
+          {%if product.cartitem_set.all%}
+            Added To Cart
+          {% else %}
+          Add to Cart
+          {% endif %}
             <i class="fas fa-shopping-cart ml-1"></i>
-            {% endif %}
-
             {{message }}
-          </a>
-        </div>
+        </button>
+        </div>  
 
        
-
+        
           <p class="lead">
 
             <span class="mr-1">
@@ -79,4 +84,35 @@
 
   </div>
 </main>
+
+<script>
+
+$(document).on('click', '#addButton', function () {
+    const addButton =  $("#addButton")
+    const url = addButton.attr("data-url");
+    const slug = addButton.attr('data-slug');
+    $.ajax({
+      url:url,
+      data:{
+        slug:slug
+      },
+      success:function(response){
+        console.log(response);
+        if(response.isCartInTheProduct){
+          addButton.html('Added to Cart <i class="fas fa-shopping-cart ml-1"></i>')
+          addButton.removeClass().addClass("btn btn-success btn-md my-0 p")
+        }else{
+          addButton.html('Add to Cart <i class="fas fa-shopping-cart ml-1"></i>')
+          addButton.removeClass().addClass("btn btn-danger btn-md my-0 p")
+
+        }
+
+      }
+    })
+});
+ 
+</script>
+
+
+<script></script>
 {% endblock %}

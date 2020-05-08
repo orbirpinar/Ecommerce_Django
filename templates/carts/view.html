@@ -35,10 +35,10 @@
                         </div>
                         <div class="col-4 col-sm-4 col-md-4 tex-center">
                             <div class="quantity">
-                                <a href="{% url 'add-to-cart' item.product.slug  %}" type="button" value="+"
-                                    class="plus"><i class="fas fa-plus"></i></a>
+                                <a data-url="{% url 'add_to_cart' item.product.slug  %}" 
+                                    class="plus" data-slug="{{ item.product.slug }}"><i class="fas fa-plus"></i></a>
                                 <p>{{ item.quantity }}</p>
-                                <a href="{% url 'remove_single_item_from_cart' item.product.slug %}" type="button"
+                                <a href="{% url 'remove_single_item_from_cart' item.product.slug %}" data-slug={{product.slug}} 
                                     value="-" class="minus"><i class="fas fa-minus"></i></a>
                             </div>
                         </div>
@@ -72,4 +72,28 @@
         {% endif %}
     </div>
 </main>
+
+
+<script>
+
+
+$(document).on('click', '.plus', function () {
+
+    const addButton =  $(".plus")
+    const url = addButton.attr("data-url");
+    const slug = addButton.attr('data-slug');
+    $.ajax({
+      url:url,
+      data:{
+        slug:slug
+      },
+      success:function(response){
+        console.log(response);
+        addButton.next().text(response.quantity)
+        response.quantity +=1
+
+      }
+    })
+});
+</script>
 {% endblock %}
